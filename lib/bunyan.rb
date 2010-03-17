@@ -30,6 +30,7 @@ module Bunyan
     def database(db_name = nil)
       @config[:database] ||= db_name
     end
+    alias_method :database=, :database
 
     # First time called sets the collection name. 
     # Otherwise, returns the collection name.
@@ -37,10 +38,12 @@ module Bunyan
     def collection(coll = nil)
       @config[:collection] ||= coll
     end
+    alias_method :collection=, :collection
 
     def disabled(dis = nil)
       @config[:disabled] ||= dis
     end
+    alias_method :disabled=, :disabled
 
     def disabled?
       disabled

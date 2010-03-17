@@ -114,3 +114,13 @@ describe 'mongodb instance methods passed to a logger instance' do
     Bunyan::Logger.count
   end
 end
+
+describe 'alternate configuration syntax' do
+  it 'should allow a user to set config options with traditional setters' do
+    Bunyan::Logger.configure do |config|
+      config.database = 'some_database'
+      config.collection = 'some_collection'
+    end
+    Bunyan::Logger.config[:database].should == 'some_database'
+  end
+end
