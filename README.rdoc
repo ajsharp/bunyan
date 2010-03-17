@@ -10,6 +10,7 @@ The only configuration options required are the database and collection name.
 For rails apps, puts the config block in an initializer.
 
 # config/intiializers/bunyan.rb
+
 Bunyan::Logger.configure do |config|
   # required options
   config.database   'bunyan_logger'
