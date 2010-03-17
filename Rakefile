@@ -7,6 +7,8 @@ begin
     gemspec.email = "ajsharp@gmail.com"
     gemspec.homepage = "http://github.com/ajsharp/bunyan"
     gemspec.authors = ["Alex Sharp"]
+    gemspec.add_dependency 'mongo',     '>= 0.19'
+    gemspec.add_dependency 'mongo_ext', '>= 0.19'
   end
 rescue LoadError
   puts "Jeweler not available. Install it with: gem install jeweler"
