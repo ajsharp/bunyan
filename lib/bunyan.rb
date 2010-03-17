@@ -59,6 +59,7 @@ module Bunyan
       end
     end
 
+    # Pass all missing class methods to the singleton instance
     def self.method_missing(method, *args, &block)
       Logger.instance.send(method, *args, &block)
     end
