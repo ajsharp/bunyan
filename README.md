@@ -1,6 +1,9 @@
 Bunyan
 ======
-Bunyan is a thin ruby wrapper around a MongoDB [capped collection](http://www.mongodb.org/display/DOCS/Capped+Collections).
+Bunyan is a thin ruby wrapper around a MongoDB [capped collection](http://www.mongodb.org/display/DOCS/Capped+Collections), 
+created with high-performance, flexible logging in mind.
+
+![](http://img2.timeinc.net/ew/dynamic/imgs/080612/Paul-Bunyan-Blue-Ox_l.jpg)
 
 Install
 =======
