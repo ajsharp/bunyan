@@ -10,6 +10,7 @@ begin
     gemspec.add_dependency 'mongo',     '>= 0.19'
     gemspec.add_dependency 'mongo_ext', '>= 0.19'
   end
+  Jeweler::GemcutterTasks.new
 rescue LoadError
   puts "Jeweler not available. Install it with: gem install jeweler"
 end
