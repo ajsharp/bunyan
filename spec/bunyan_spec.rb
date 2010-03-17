@@ -98,6 +98,16 @@ describe 'bunyan logger configuration' do
   end
 end
 
+describe Bunyan::Logger, "#disabled?" do
+  it "should return false if nothing is set" do
+    Bunyan::Logger.configure do |config|
+      config.database   'my_database'
+      config.collection 'my_collection'
+    end
+    Bunyan::Logger.disabled?.should == false
+  end
+end
+
 describe 'the database getter' do
   it 'should allow setting of the database' do
     Bunyan::Logger.configure do |config|

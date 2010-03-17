@@ -46,7 +46,7 @@ module Bunyan
     alias_method :disabled=, :disabled
 
     def disabled?
-      disabled
+      !!disabled
     end
 
     def method_missing(method, *args, &block)
