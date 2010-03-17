@@ -11,7 +11,7 @@ module Bunyan
 
     class InvalidConfigurationError < RuntimeError; end
 
-    attr_reader :db, :connection
+    attr_reader :db, :connection, :config
 
     # Bunyan::Logger.configure do |config|
     #   # required options

@@ -16,6 +16,10 @@ describe Bunyan::Logger do
     @logger.should respond_to :collection
   end
 
+  it 'should have a config hash' do
+    @logger.config.should be_a Hash
+  end
+
   it 'should create a new capped collection if the collection does not already exist' do
     @conn.should_receive(:create_collection).with('collection_1', :capped => true)
     @conn.stub!(:collection_names).and_return([])
@@ -36,6 +40,24 @@ describe Bunyan::Logger do
 
 end
 
+describe 'the required config options' do
+  it 'should raise an error if a db name is not provided' do
+    lambda {
+      Bunyan::Logger.configure do |c|
+        c.collection 'collection_without_database'
+      end
+    }.should raise_exception(Bunyan::Logger::InvalidConfigurationError, 'Error! Please provide a database name.')
+  end
+
+  it 'should raise an error if a db collection is not provided' do
+    lambda {
+      Bunyan::Logger.configure do |c|
+        c.database 'db_without_collection'
+      end
+    }.should raise_exception(Bunyan::Logger::InvalidConfigurationError, 'Error! Please provide a collection name.')
+  end
+end
+
 describe 'bunyan logger configuration' do
   describe 'setting config values' do
     before do
@@ -54,24 +76,6 @@ describe 'bunyan logger configuration' do
     end
   end
 
-  describe 'the required config options' do
-    it 'should raise an error if a db name is not provided' do
-      lambda {
-        Bunyan::Logger.configure do |c|
-          c.collection 'collection_without_database'
-        end
-      }.should raise_exception(Bunyan::Logger::InvalidConfigurationError, 'Error! Please provide a database name.')
-    end
-
-    it 'should raise an error if a db collection is not provided' do
-      lambda {
-        Bunyan::Logger.configure do |c|
-          c.database 'db_without_collection'
-        end
-      }.should raise_exception(Bunyan::Logger::InvalidConfigurationError, 'Error! Please provide a collection name.')
-    end
-  end
-
   describe 'the optional config options' do
     it 'should allow the user to mark bunyan as disabled' do
       Bunyan::Logger.configure do |c|
@@ -84,9 +88,6 @@ describe 'bunyan logger configuration' do
   end
 
   describe "when the disabled flag is set" do
-    before do
-    end
-
     it 'should not create a new logger instance' do
       Bunyan::Logger.should_not_receive(:initialize_connection)
       Bunyan::Logger.configure do |c|
