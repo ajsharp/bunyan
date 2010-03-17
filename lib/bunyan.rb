@@ -20,9 +20,11 @@ module Bunyan
     # end
     def configure(&block)
       @config = {}
+
       yield self
+
       ensure_required_options_exist
-      initialize_connection
+      initialize_connection unless disabled?
     end
 
     # First time called sets the database name. 

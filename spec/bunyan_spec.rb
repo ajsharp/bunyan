@@ -88,7 +88,7 @@ describe 'bunyan logger configuration' do
     end
 
     it 'should not create a new logger instance' do
-      Bunyan::Logger.should_not_receive(:new)
+      Bunyan::Logger.should_not_receive(:initialize_connection)
       Bunyan::Logger.configure do |c|
         c.database   'test_db'
         c.collection 'test_collection'
