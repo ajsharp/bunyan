@@ -21,6 +21,7 @@ Gem::Specification.new do |s|
      "README.md",
      "Rakefile",
      "VERSION",
+     "bunyan.gemspec",
      "lib/bunyan.rb",
      "spec/bunyan_spec.rb",
      "spec/spec.opts",
