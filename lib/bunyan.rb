@@ -76,7 +76,7 @@ module Bunyan
       end
 
       def database_is_usable?
-        !disabled? && configured?
+         configured? && !disabled?
       end
 
       def ensure_required_options_exist
