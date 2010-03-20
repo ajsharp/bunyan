@@ -13,7 +13,7 @@ Configure
 =========
 The only configuration options required are the database and collection name.
 
-For rails apps, puts the config block in an initializer.
+For rails apps, put the following config block in an initializer.
 
     # config/initializers/bunyan.rb
     Bunyan::Logger.configure do |config|
@@ -58,3 +58,4 @@ TODO
 ====
 * Ability to limit bunyan to only run in certain environments
 * Add middleware client for easy drop-in to rails/rack apps
+* Ability to configure size of capped collection
