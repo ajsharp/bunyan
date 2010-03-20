@@ -11,7 +11,7 @@ module Bunyan
 
     class InvalidConfigurationError < RuntimeError; end
 
-    attr_reader :db, :connection, :config
+    attr_reader :db, :connection, :config, :configured
 
     # Bunyan::Logger.configure do |config|
     #   # required options
@@ -25,6 +25,11 @@ module Bunyan
 
       ensure_required_options_exist
       initialize_connection unless disabled?
+      @configured = true
+    end
+
+    def configured?
+      !!@configured
     end
 
     # First time called sets the database name. 
@@ -53,7 +58,7 @@ module Bunyan
 
     def method_missing(method, *args, &block)
       begin
-        db.send(method, *args)
+        db.send(method, *args) if database_is_usable?
       rescue
         super(method, *args, &block)
       end
@@ -68,6 +73,10 @@ module Bunyan
       def initialize_connection
         @connection  = Mongo::Connection.new.db(database)
         @db          = retrieve_or_initialize_collection(collection)
+      end
+
+      def database_is_usable?
+        !disabled? && configured?
       end
 
       def ensure_required_options_exist

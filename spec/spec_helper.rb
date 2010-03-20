@@ -29,5 +29,14 @@ Spec::Runner.configure do |config|
     Bunyan::Logger.instance_variable_set(:@database, nil)
     Bunyan::Logger.instance_variable_set(:@collection, nil)
     Bunyan::Logger.instance_variable_set(:@db, nil)
+    Bunyan::Logger.instance_variable_set(:@config, nil)
+    Bunyan::Logger.instance_variable_set(:@configured, nil)
+  end
+
+  def configure_test_db
+    Bunyan::Logger.configure do |config|
+      config.database   'bunyan_test'
+      config.collection 'bunyan_test_log'
+    end
   end
 end

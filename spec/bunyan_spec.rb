@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'spec/spec_helper'
 
 describe Bunyan::Logger do
 
@@ -121,6 +121,7 @@ end
 
 describe 'mongodb instance methods passed to a logger instance' do
   it 'should be passed through to the collection' do
+    configure_test_db
     Bunyan::Logger.db.should_receive(:count)
     Bunyan::Logger.count
   end
@@ -133,5 +134,50 @@ describe 'alternate configuration syntax' do
       config.collection = 'some_collection'
     end
     Bunyan::Logger.config[:database].should == 'some_database'
+  end
+end
+
+describe 'when bunyan is disabled' do
+  before do
+    @conn = mock_mongo_connection
+    Bunyan::Logger.configure do |config|
+      config.database   'bunyan_test'
+      config.collection 'bunyan_test_log'
+      config.disabled   true
+    end
+  end
+
+  it "should not send messages to the mongo collection" do
+    %w(insert count find).each do |command|
+      Bunyan::Logger.db.should_not_receive(command)
+      Bunyan::Logger.send command
+    end
+  end
+end
+
+describe 'when bunyan is not configured' do
+  it 'should not try to send messages to mongo' do
+    Bunyan::Logger.instance.stub!(:configured?).and_return(false)
+    Bunyan::Logger.should_not be_configured
+    Bunyan::Logger.should_not be_disabled
+    %w(insert count find).each do |command|
+      Bunyan::Logger.db.should_not_receive(command)
+      Bunyan::Logger.send command
+    end
+  end
+end
+
+describe 'the mongo configuration state' do
+  it 'should not be configured by default' do
+    Bunyan::Logger.should_not be_configured
+  end
+
+  it 'should be configured after being configured' do
+    Bunyan::Logger.configure do |config|
+      config.database   'bunyan_test'
+      config.collection 'bunyan_test_log'
+    end
+
+    Bunyan::Logger.should be_configured
   end
 end
