@@ -120,7 +120,7 @@ describe 'when bunyan is not configured' do
     Bunyan::Logger.should_not be_configured
     Bunyan::Logger.should_not be_disabled
     %w(insert count find).each do |command|
-      Bunyan::Logger.db.should_not_receive(command)
+      Bunyan::Logger.collection.should_not_receive(command)
       Bunyan::Logger.send command
     end
   end
@@ -128,6 +128,7 @@ end
 
 describe 'the mongo configuration state' do
   it 'should not be configured by default' do
+    cleanup_bunyan_config
     Bunyan::Logger.should_not be_configured
   end
 

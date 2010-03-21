@@ -43,7 +43,7 @@ module Bunyan
 
     def method_missing(method, *args, &block)
       begin
-        db.send(method, *args) if database_is_usable?
+        collection.send(method, *args) if database_is_usable?
       rescue
         super(method, *args, &block)
       end
@@ -72,14 +72,14 @@ module Bunyan
 
       def retrieve_or_initialize_collection(collection_name)
         if collection_exists?(collection_name)
-          connection.collection(collection_name)
+          db.collection(collection_name)
         else
           db.create_collection(collection_name, :capped => true, :size => config.size)
         end
       end
 
       def collection_exists?(collection_name)
-        connection.collection_names.include? collection_name
+        db.collection_names.include? collection_name
       end
 
   end
