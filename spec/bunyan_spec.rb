@@ -126,19 +126,3 @@ describe 'when bunyan is not configured' do
   end
 end
 
-describe 'the mongo configuration state' do
-  it 'should not be configured by default' do
-    cleanup_bunyan_config
-    Bunyan::Logger.should_not be_configured
-  end
-
-  it 'should be configured after being configured' do
-    Bunyan::Logger.configure do |config|
-      config.database   'bunyan_test'
-      config.collection 'bunyan_test_log'
-    end
-
-    Bunyan::Logger.should be_configured
-  end
-end
-
