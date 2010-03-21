@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{bunyan}
-  s.version = "0.1.0"
+  s.version = "0.2.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Alex Sharp"]
-  s.date = %q{2010-03-17}
+  s.date = %q{2010-03-20}
   s.description = %q{Bunyan is a thin ruby wrapper around a MongoDB capped collection, created with high-performance, flexible logging in mind.}
   s.email = %q{ajsharp@gmail.com}
   s.extra_rdoc_files = [
@@ -17,13 +17,17 @@ Gem::Specification.new do |s|
   ]
   s.files = [
     ".gitignore",
+     "CHANGELOG.md",
      "Gemfile",
      "README.md",
      "Rakefile",
      "VERSION",
      "bunyan.gemspec",
+     "examples/rails.rb",
      "lib/bunyan.rb",
+     "lib/bunyan/config.rb",
      "spec/bunyan_spec.rb",
+     "spec/config_spec.rb",
      "spec/spec.opts",
      "spec/spec_helper.rb"
   ]
@@ -34,7 +38,10 @@ Gem::Specification.new do |s|
   s.summary = %q{A MongoDB-based logging solution.}
   s.test_files = [
     "spec/bunyan_spec.rb",
-     "spec/spec_helper.rb"
+     "spec/config_spec.rb",
+     "spec/integration/non_rails_spec.rb",
+     "spec/spec_helper.rb",
+     "examples/rails.rb"
   ]
 
   if s.respond_to? :specification_version then
