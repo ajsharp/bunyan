@@ -58,4 +58,4 @@ TODO
 ====
 * Ability to limit bunyan to only run in certain environments
 * Add middleware client for easy drop-in to rails/rack apps
-* Ability to configure size of capped collection
+* <del>Ability to configure size of capped collection</del>
