@@ -1,27 +1,40 @@
-require 'spec/spec_helper'
+require 'spec_helper'
 
 describe Bunyan::Logger do
+  before do
+    @logger = Bunyan::Logger.instance
+    @mock_database = nil
+    Mongo::Connection.unstub!(:new)
+  end
 
+  it 'should have a connection' do
+    configure_test_db
+    @logger.connection.should be_instance_of Mongo::Connection
+  end
+
+  it 'should have a reference to the mongo db object' do
+    @logger.db.should be_instance_of Mongo::DB
+  end
+
+  it 'should have a config hash' do
+    @logger.config.should respond_to :[]
+  end
+
+
+  it 'should use the mongo c extension' do
+    defined?(CBson::VERSION).should_not be_nil
+  end
+end
+
+describe 'when initializing the collection' do
   before do
     @conn = mock_mongo_connection
     @logger = Bunyan::Logger.instance
     @logger.stub!(:connection).and_return(@conn)
   end
 
-  it 'should have a connection' do
-    @logger.should respond_to :connection
-  end
-
-  it 'should have a collection' do
-    @logger.should respond_to :collection
-  end
-
-  it 'should have a config hash' do
-    @logger.config.should be_a Hash
-  end
-
   it 'should create a new capped collection if the collection does not already exist' do
-    @conn.should_receive(:create_collection).with('collection_1', :capped => true)
+    @conn.should_receive(:create_collection).with('collection_1', :capped => true, :size => 52428800)
     @conn.stub!(:collection_names).and_return([])
     Bunyan::Logger.configure do |config|
       config.database   'database_1'
@@ -37,7 +50,6 @@ describe Bunyan::Logger do
       config.collection 'collection_1'
     end
   end
-
 end
 
 describe 'the required config options' do
@@ -58,46 +70,6 @@ describe 'the required config options' do
   end
 end
 
-describe 'bunyan logger configuration' do
-  describe 'setting config values' do
-    before do
-      Bunyan::Logger.configure do |c|
-        c.database   'database2'
-        c.collection 'collection2'
-      end
-    end
-
-    it 'should allow setting of the database' do
-      Bunyan::Logger.database.should == 'database2'
-    end
-
-    it 'shoudl allow setting of the collection name' do
-      Bunyan::Logger.collection.should == 'collection2'
-    end
-  end
-
-  describe 'the optional config options' do
-    it 'should allow the user to mark bunyan as disabled' do
-      Bunyan::Logger.configure do |c|
-        c.database   'test_db'
-        c.collection 'test_collection'
-        c.disabled   true
-      end
-      Bunyan::Logger.should be_disabled
-    end
-  end
-
-  describe "when the disabled flag is set" do
-    it 'should not create a new logger instance' do
-      Bunyan::Logger.should_not_receive(:initialize_connection)
-      Bunyan::Logger.configure do |c|
-        c.database   'test_db'
-        c.collection 'test_collection'
-        c.disabled   true
-      end
-    end
-  end
-end
 
 describe Bunyan::Logger, "#disabled?" do
   it "should return false if nothing is set" do
@@ -109,20 +81,10 @@ describe Bunyan::Logger, "#disabled?" do
   end
 end
 
-describe 'the database getter' do
-  it 'should allow setting of the database' do
-    Bunyan::Logger.configure do |config|
-      config.database   'my_database'
-      config.collection 'my_collection'
-    end
-    Bunyan::Logger.instance.database.should == 'my_database'
-  end
-end
-
 describe 'mongodb instance methods passed to a logger instance' do
   it 'should be passed through to the collection' do
     configure_test_db
-    Bunyan::Logger.db.should_receive(:count)
+    Bunyan::Logger.collection.should_receive(:count)
     Bunyan::Logger.count
   end
 end
@@ -138,18 +100,15 @@ describe 'alternate configuration syntax' do
 end
 
 describe 'when bunyan is disabled' do
-  before do
+  it "should not send messages to the mongo collection" do
     @conn = mock_mongo_connection
     Bunyan::Logger.configure do |config|
       config.database   'bunyan_test'
       config.collection 'bunyan_test_log'
       config.disabled   true
     end
-  end
-
-  it "should not send messages to the mongo collection" do
     %w(insert count find).each do |command|
-      Bunyan::Logger.db.should_not_receive(command)
+      Bunyan::Logger.collection.should_not_receive(command)
       Bunyan::Logger.send command
     end
   end
@@ -181,3 +140,4 @@ describe 'the mongo configuration state' do
     Bunyan::Logger.should be_configured
   end
 end
+

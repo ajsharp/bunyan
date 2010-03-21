@@ -1,9 +1,10 @@
 require 'rubygems'
-
-#gem 'mongo_ext'
-
 require 'mongo'
 require 'singleton'
+
+$LOAD_PATH.unshift(File.expand_path(File.dirname(__FILE__)))
+
+require 'bunyan/config'
 
 module Bunyan
   class Logger
@@ -11,17 +12,21 @@ module Bunyan
 
     class InvalidConfigurationError < RuntimeError; end
 
-    attr_reader :db, :connection, :config, :configured
+    attr_reader :db, :connection, :collection, :config
 
     # Bunyan::Logger.configure do |config|
     #   # required options
     #   config.database   'bunyan_logger'
     #   config.collection 'development_log'
+    #
+    #   # optional options
+    #   config.disabled true
+    #   config.size 52428800 # 50.megabytes in Rails
     # end
     def configure(&block)
-      @config = {}
+      @config = Logger::Config.new
 
-      yield self
+      yield @config
 
       ensure_required_options_exist
       initialize_connection unless disabled?
@@ -29,31 +34,11 @@ module Bunyan
     end
 
     def configured?
-      !!@configured
+      @configured
     end
-
-    # First time called sets the database name. 
-    # Otherwise, returns the database name.
-    def database(db_name = nil)
-      @config[:database] ||= db_name
-    end
-    alias_method :database=, :database
-
-    # First time called sets the collection name. 
-    # Otherwise, returns the collection name.
-    # For the actual collection object returned by Mongo, see #db.
-    def collection(coll = nil)
-      @config[:collection] ||= coll
-    end
-    alias_method :collection=, :collection
-
-    def disabled(dis = nil)
-      @config[:disabled] ||= dis
-    end
-    alias_method :disabled=, :disabled
 
     def disabled?
-      !!disabled
+      !!config.disabled
     end
 
     def method_missing(method, *args, &block)
@@ -71,8 +56,9 @@ module Bunyan
 
     private
       def initialize_connection
-        @connection  = Mongo::Connection.new.db(database)
-        @db          = retrieve_or_initialize_collection(collection)
+        @db         = Mongo::Connection.new.db(config.database)
+        @connection = @db.connection
+        @collection = retrieve_or_initialize_collection(config.collection)
       end
 
       def database_is_usable?
@@ -80,20 +66,21 @@ module Bunyan
       end
 
       def ensure_required_options_exist
-        raise InvalidConfigurationError, 'Error! Please provide a database name.'   unless database
-        raise InvalidConfigurationError, 'Error! Please provide a collection name.' unless collection
+        raise InvalidConfigurationError, 'Error! Please provide a database name.'   unless config.database
+        raise InvalidConfigurationError, 'Error! Please provide a collection name.' unless config.collection
       end
 
       def retrieve_or_initialize_collection(collection_name)
         if collection_exists?(collection_name)
           connection.collection(collection_name)
         else
-          connection.create_collection(collection_name, :capped => true)
+          db.create_collection(collection_name, :capped => true, :size => config.size)
         end
       end
 
       def collection_exists?(collection_name)
         connection.collection_names.include? collection_name
       end
+
   end
 end
