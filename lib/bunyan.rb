@@ -56,13 +56,18 @@ module Bunyan
 
     private
       def initialize_connection
-        @db         = Mongo::Connection.new.db(config.database)
-        @connection = @db.connection
-        @collection = retrieve_or_initialize_collection(config.collection)
+        begin
+          @db         = Mongo::Connection.new.db(config.database)
+          @connection = @db.connection
+          @collection = retrieve_or_initialize_collection(config.collection)
+        rescue Mongo::ConnectionFailure => ex
+          @disabled = true
+          $stderr.puts 'An error occured trying to connect to MongoDB!'
+        end
       end
 
       def database_is_usable?
-         configured? && !disabled?
+        configured? && !disabled?
       end
 
       def ensure_required_options_exist

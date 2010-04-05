@@ -2,9 +2,9 @@ require 'spec_helper'
 
 describe Bunyan::Logger do
   before do
+    Mongo::Connection.unstub!(:new)
     @logger = Bunyan::Logger.instance
     @mock_database = nil
-    Mongo::Connection.unstub!(:new)
   end
 
   it 'should have a connection' do
@@ -13,16 +13,40 @@ describe Bunyan::Logger do
   end
 
   it 'should have a reference to the mongo db object' do
+    configure_test_db
     @logger.db.should be_instance_of Mongo::DB
   end
 
   it 'should have a config hash' do
-    @logger.config.should respond_to :[]
+    Bunyan::Logger.config.should respond_to :[]
   end
 
 
   it 'should use the mongo c extension' do
     defined?(CBson::VERSION).should_not be_nil
+  end
+end
+
+describe 'when a mongod instance is not running' do
+  before do
+    Mongo::Connection.stub!(:new).and_raise(Mongo::ConnectionFailure)
+  end
+
+  it 'should not blow up' do
+    lambda {
+      Bunyan::Logger.configure do |c|
+        c.database   'doesnt_matter'
+        c.collection 'b/c mongod isnt running'
+      end
+    }.should_not raise_exception(Mongo::ConnectionFailure)
+  end
+
+  it 'should mark bunyan as disabled' do
+    Bunyan::Logger.configure do |c|
+      c.database   'doesnt_matter'
+      c.collection 'b/c mongod isnt running'
+    end
+    Bunyan::Logger.instance.instance_variable_get(:@disabled).should == true
   end
 end
 

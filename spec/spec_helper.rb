@@ -8,10 +8,6 @@ $LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__))
 
 Spec::Runner.configure do |config|
 
-  config.after :each do
-    cleanup_bunyan_config
-  end
-
   config.before :each do
     mock_mongo_connection
   end
@@ -27,10 +23,6 @@ Spec::Runner.configure do |config|
     @mock_connection.stub!(:db).and_return(@mock_database)
     Mongo::Connection.stub!(:new).and_return(@mock_connection)
     @mock_database
-  end
-
-  def cleanup_bunyan_config
-    Bunyan::Logger.instance_variable_set(:@config, Bunyan::Logger::Config.new)
   end
 
   def configure_test_db
