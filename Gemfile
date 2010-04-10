@@ -1,5 +1,5 @@
-gem 'mongo',      '>= 0.19'
-gem 'mongo_ext',  '>= 0.19'
+gem 'bson_ext',   '>= 0.20.1'
+gem 'mongo',      '>= 0.20'
 
 group :test do
   gem 'rspec', '>= 1.3.0'
