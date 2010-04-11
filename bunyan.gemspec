@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{bunyan}
-  s.version = "0.2.1"
+  s.version = "0.2.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Alex Sharp"]
-  s.date = %q{2010-04-06}
+  s.date = %q{2010-04-10}
   s.description = %q{Bunyan is a thin ruby wrapper around a MongoDB capped collection, created with high-performance, flexible logging in mind.}
   s.email = %q{ajsharp@gmail.com}
   s.extra_rdoc_files = [
@@ -48,15 +48,15 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<mongo>, [">= 0.19"])
-      s.add_runtime_dependency(%q<mongo_ext>, [">= 0.19"])
+      s.add_runtime_dependency(%q<mongo>, [">= 0.20.1"])
+      s.add_runtime_dependency(%q<bson_ext>, [">= 0.20.1"])
     else
-      s.add_dependency(%q<mongo>, [">= 0.19"])
-      s.add_dependency(%q<mongo_ext>, [">= 0.19"])
+      s.add_dependency(%q<mongo>, [">= 0.20.1"])
+      s.add_dependency(%q<bson_ext>, [">= 0.20.1"])
     end
   else
-    s.add_dependency(%q<mongo>, [">= 0.19"])
-    s.add_dependency(%q<mongo_ext>, [">= 0.19"])
+    s.add_dependency(%q<mongo>, [">= 0.20.1"])
+    s.add_dependency(%q<bson_ext>, [">= 0.20.1"])
   end
 end
 
