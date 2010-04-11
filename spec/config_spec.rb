@@ -96,3 +96,23 @@ describe 'bunyan logger configuration' do
   end
 end
 
+describe Bunyan::Logger::Config, "#disabled?" do
+  before :each do
+    @config = Bunyan::Logger::Config.new
+  end
+
+  it 'should be false if @disabled is nil' do
+    @config.disabled = nil
+    @config.should_not be_disabled
+  end
+
+  it 'should be true if @disabled is true' do
+    @config.disabled = true
+    @config.should be_disabled
+  end
+
+  it 'should be false if @isabled is false' do
+    @config.disabled = false
+    @config.should_not be_disabled
+  end
+end

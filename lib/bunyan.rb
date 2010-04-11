@@ -38,7 +38,8 @@ module Bunyan
     end
 
     def disabled?
-      !!config.disabled
+      # @TODO: Refactor this. Yuck.
+      config.nil? || (!config.nil? && config.disabled?)
     end
 
     def method_missing(method, *args, &block)
@@ -61,7 +62,9 @@ module Bunyan
           @connection = @db.connection
           @collection = retrieve_or_initialize_collection(config.collection)
         rescue Mongo::ConnectionFailure => ex
-          @disabled = true
+          # @TODO: I don't like how I'm overloading @config.disabled
+          # for user disabling and error disabling
+          @config.disabled = true
           $stderr.puts 'An error occured trying to connect to MongoDB!'
         end
       end

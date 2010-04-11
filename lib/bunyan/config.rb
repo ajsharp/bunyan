@@ -35,6 +35,10 @@ module Bunyan
       end
       alias_method :disabled=, :disabled
 
+      def disabled?
+        !!@disabled
+      end
+
       # default size is 50 megabytes
       def size(new_size = nil)
         new_size.nil? ? @size : @size = new_size

@@ -46,7 +46,7 @@ describe 'when a mongod instance is not running' do
       c.database   'doesnt_matter'
       c.collection 'b/c mongod isnt running'
     end
-    Bunyan::Logger.instance.instance_variable_get(:@disabled).should == true
+    Bunyan::Logger.should be_disabled
   end
 end
 
@@ -138,15 +138,17 @@ describe 'when bunyan is disabled' do
   end
 end
 
+# @NOTE: Some of these tests rely on other tests not modifying the mongo
+# config object. This is not good, though much harder to achieve per-example
+# independence when testing a singleton object.
 describe 'when bunyan is not configured' do
   it 'should not try to send messages to mongo' do
-    Bunyan::Logger.instance.stub!(:configured?).and_return(false)
-    Bunyan::Logger.should_not be_configured
-    Bunyan::Logger.should_not be_disabled
+    Bunyan::Logger.instance.stub!(:config).and_return(nil)
     %w(insert count find).each do |command|
       Bunyan::Logger.collection.should_not_receive(command)
       Bunyan::Logger.send command
     end
   end
 end
+
 
