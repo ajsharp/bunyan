@@ -59,4 +59,5 @@ TODO
 * <del>Fail silently if no mongo server running</del>
 * Ability to limit bunyan to only run in certain environments
 * Add middleware client for easy drop-in to rails/rack apps
+* Add ability to connect to a remote mongo server
 * <del>Ability to configure size of capped collection</del>
