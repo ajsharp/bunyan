@@ -1,3 +1,7 @@
+Version 0.3.0
+=============
+* Can now specify and connect a remote host and alternate port
+
 Version 0.2.2
 =============
 * No longer pass messages to the collection if a Mongo connection could not be established
