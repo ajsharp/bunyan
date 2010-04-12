@@ -116,3 +116,45 @@ describe Bunyan::Logger::Config, "#disabled?" do
     @config.should_not be_disabled
   end
 end
+
+describe 'when we configure a remote host' do
+  def configure_with_remote_host
+    Bunyan::Logger.configure do |c|
+      c.host       'some.remote.host'
+      c.database   'test_db'
+      c.collection 'test_collection'
+    end
+  end
+
+  it 'should attempt to connect to the remote host' do
+    Mongo::Connection.should_receive(:new).with('some.remote.host', nil)
+    configure_with_remote_host
+  end
+
+  it 'should set the host config option' do
+    configure_with_remote_host
+    Bunyan::Logger.config.host.should == 'some.remote.host'
+  end
+end
+
+describe 'when we configure a port' do
+  def configure_with_remote_port
+    Bunyan::Logger.configure do |c|
+      c.host       'some.remote.host'
+      c.port       '20910'
+      c.database   'test_db'
+      c.collection 'test_collection'
+    end
+  end
+
+  it 'should attempt to connect to a remote port' do
+    Mongo::Connection.should_receive(:new).with('some.remote.host', '20910')
+    configure_with_remote_port
+  end
+
+  it 'should set the port config option' do
+    configure_with_remote_port
+    Bunyan::Logger.config.port.should == '20910'
+  end
+end
+

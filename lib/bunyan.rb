@@ -58,7 +58,7 @@ module Bunyan
     private
       def initialize_connection
         begin
-          @db         = Mongo::Connection.new.db(config.database)
+          @db         = Mongo::Connection.new(config.host, config.port).db(config.database)
           @connection = @db.connection
           @collection = retrieve_or_initialize_collection(config.collection)
         rescue Mongo::ConnectionFailure => ex

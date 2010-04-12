@@ -15,6 +15,16 @@ module Bunyan
         send(meth)
       end
 
+      def port(port_num = nil)
+        @port ||= port_num
+      end
+      alias_method :port=, :port
+
+      def host(host_address = nil)
+        @host ||= host_address
+      end
+      alias_method :host=, :host
+
       # First time called sets the database name. 
       # Otherwise, returns the database name.
       def database(db_name = nil)
