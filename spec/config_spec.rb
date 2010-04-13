@@ -43,7 +43,15 @@ describe Bunyan::Logger::Config, 'when setting the collection size' do
 end
 
 describe Bunyan::Logger::Config, 'when getting the collection size' do
-  it 'should return the collection size'
+  it 'should return the collection size' do
+    Bunyan::Logger.configure do |c|
+      c.database   'test_db'
+      c.collection 'test_collection'
+      c.size       2929
+    end
+
+    Bunyan::Logger.config.size.should == 2929
+  end
 end
 
 describe Bunyan::Logger::Config, 'alternate method invocation syntax' do
