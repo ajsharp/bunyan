@@ -1,9 +1,15 @@
 Bunyan
 ======
+![](http://img2.timeinc.net/ew/dynamic/imgs/080612/Paul-Bunyan-Blue-Ox_l.jpg)
+
 Bunyan is a thin ruby wrapper around a MongoDB [capped collection](http://www.mongodb.org/display/DOCS/Capped+Collections), 
 created with high-performance, flexible logging in mind.
 
-![](http://img2.timeinc.net/ew/dynamic/imgs/080612/Paul-Bunyan-Blue-Ox_l.jpg)
+Bunyan is not intended to be used as a drop-in replacement for the default
+rails logger. If you need to do this, please see peburrows' [mongo\_db\_logger](http://github.com/peburrows/mongo_db_logger).
+
+However, there is planned support for a flexible middleware component to drop in
+to your rails app. 
 
 Install
 =======
