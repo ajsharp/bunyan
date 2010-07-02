@@ -166,3 +166,27 @@ describe 'when we configure a port' do
   end
 end
 
+describe 'when we set a connection' do
+
+  def configure_with_connection
+    Bunyan::Logger.configure do |c|
+      c.connection = other_fake_mongo
+      c.port       '20910'
+      c.database   'test_db'
+      c.collection 'test_collection'
+    end
+  end
+
+  it 'should not set a connection based on other params' do
+    Mongo::Connection.should_not_receive(:new)
+    configure_with_connection
+  end
+
+  it 'should set the db field' do
+    Mongo::Connection.should_not_receive(:new)
+    configure_with_connection
+    Bunyan::Logger.db.should eql(@mock_database)
+  end
+  
+end
+

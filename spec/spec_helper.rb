@@ -6,6 +6,9 @@ Bundler.require :default, :test
 require File.expand_path(File.dirname(__FILE__) + '/../lib/bunyan')
 $LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__))
 
+class DuckedMongo
+end
+
 Spec::Runner.configure do |config|
 
   config.before :each do
@@ -23,6 +26,13 @@ Spec::Runner.configure do |config|
     @mock_connection.stub!(:db).and_return(@mock_database)
     Mongo::Connection.stub!(:new).and_return(@mock_connection)
     @mock_database
+  end
+
+  def other_fake_mongo
+    #I want to check Mongo::Connection.stub.new is not called
+    dm = DuckedMongo
+    dm.stub!(:db).and_return(@mock_database)
+    dm
   end
 
   def configure_test_db

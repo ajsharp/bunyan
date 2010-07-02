@@ -5,7 +5,7 @@ module Bunyan
 
     class Config
       extend Bunyan::ConfigurableMethods
-      configurable_methods :port, :host, :database, :collection, :disabled
+      configurable_methods :port, :host, :database, :collection, :disabled, :connection
 
       def initialize
         @size     = 52428800

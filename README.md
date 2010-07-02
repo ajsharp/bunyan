@@ -31,6 +31,11 @@ For rails apps, put the following config block in an initializer.
       config.host     'some.remote.host' # defaults to localhost
       config.port     '12345'            # defaults to 27017
       config.disabled true
+
+      # other connection option
+      # Specify a valid ruby driver connection object (single / pair)
+      # if you do so, host / port are ignored 
+      config.connection = $connection
     end
 
 Usage

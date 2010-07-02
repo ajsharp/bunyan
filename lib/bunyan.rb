@@ -58,8 +58,13 @@ module Bunyan
     private
       def initialize_connection
         begin
-          @db         = Mongo::Connection.new(config.host, config.port).db(config.database)
-          @connection = @db.connection
+          if (config.connection)
+            @connection = config.connection
+            @db = @connection.db
+          else
+            @db = Mongo::Connection.new(config.host, config.port).db(config.database)
+            @connection = @db.connection
+          end
           @collection = retrieve_or_initialize_collection(config.collection)
         rescue Mongo::ConnectionFailure => ex
           # @TODO: I don't like how I'm overloading @config.disabled
