@@ -69,9 +69,9 @@ More
 
 TODO
 ====
-* Ability to specify auth creds for making mongo connection
+* Ability to specify auth creds for making a mongo connection
 * <del>Fail silently if no mongo server running</del>
 * Ability to limit bunyan to only run in certain environments
 * Add middleware client for easy drop-in to rails/rack apps
-<del>* Add ability to connect to a remote mongo server</del>
+* <del>Add ability to connect to a remote mongo server</del>
 * <del>Ability to configure size of capped collection</del>
