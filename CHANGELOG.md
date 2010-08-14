@@ -1,3 +1,8 @@
+Version 0.4.0
+=============
+* New configuration syntax (see readme)
+* Ability to pass in custom connection object
+
 Version 0.3.0
 =============
 * Can now specify and connect a remote host and alternate port
