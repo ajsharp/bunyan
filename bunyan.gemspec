@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{bunyan}
-  s.version = "0.3.0"
+  s.version = "0.4.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Alex Sharp"]
-  s.date = %q{2010-04-12}
+  s.date = %q{2010-08-14}
   s.description = %q{Bunyan is a thin ruby wrapper around a MongoDB capped collection, created with high-performance, flexible logging in mind.}
   s.email = %q{ajsharp@gmail.com}
   s.extra_rdoc_files = [
@@ -19,6 +19,7 @@ Gem::Specification.new do |s|
     ".gitignore",
      "CHANGELOG.md",
      "Gemfile",
+     "MIT-LICENSE",
      "README.md",
      "Rakefile",
      "VERSION",
@@ -26,8 +27,10 @@ Gem::Specification.new do |s|
      "examples/rails.rb",
      "lib/bunyan.rb",
      "lib/bunyan/config.rb",
+     "lib/bunyan/configurable_methods.rb",
      "spec/bunyan_spec.rb",
      "spec/config_spec.rb",
+     "spec/integration_spec.rb",
      "spec/spec.opts",
      "spec/spec_helper.rb"
   ]
@@ -39,6 +42,7 @@ Gem::Specification.new do |s|
   s.test_files = [
     "spec/bunyan_spec.rb",
      "spec/config_spec.rb",
+     "spec/integration_spec.rb",
      "spec/spec_helper.rb",
      "examples/rails.rb"
   ]
