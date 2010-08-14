@@ -26,7 +26,8 @@ module Bunyan
     def configure(&block)
       @config = Logger::Config.new
 
-      yield @config
+      # provide legacy support for old configuration syntax
+      (block.arity > 0) ? yield(@config) : @config.instance_eval(&block)
 
       ensure_required_options_exist
       initialize_connection unless disabled?

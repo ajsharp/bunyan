@@ -190,3 +190,24 @@ describe 'when we set a connection' do
   
 end
 
+describe 'the new configuration syntax' do
+  it 'should allow argument-less block configuration syntax' do
+    Bunyan::Logger.configure do
+      database   'new_config_db'
+      collection 'new_config_collection'
+    end
+    
+    Bunyan::Logger.config.database.should == 'new_config_db'
+  end
+end
+
+describe 'the old configuration syntax' do
+  it 'should allow the configuration object to be passed in to the configure block' do
+    Bunyan::Logger.configure do |c|
+      c.database   'old_config_db'
+      c.collection 'old_config_collection'
+    end
+    
+    Bunyan::Logger.config.database.should == 'old_config_db'
+  end
+end
