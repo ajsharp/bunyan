@@ -35,7 +35,7 @@ module Bunyan
     end
 
     def configured?
-      @configured
+      !!@configured
     end
 
     def disabled?
