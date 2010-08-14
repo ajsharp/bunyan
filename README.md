@@ -22,20 +22,20 @@ The only configuration options required are the database and collection name.
 For rails apps, put the following config block in an initializer.
 
     # config/initializers/bunyan.rb
-    Bunyan::Logger.configure do |config|
+    Bunyan::Logger.configure do
       # required options
-      config.database   'bunyan_logger'
-      config.collection 'development_log'
+      database   'bunyan_logger'
+      collection 'development_log'
 
       # optional
-      config.host     'some.remote.host' # defaults to localhost
-      config.port     '12345'            # defaults to 27017
-      config.disabled true
+      host     'some.remote.host' # defaults to localhost
+      port     '12345'            # defaults to 27017
+      disabled true
 
       # other connection option
       # Specify a valid ruby driver connection object (single / pair)
       # if you do so, host / port are ignored 
-      config.connection = $connection
+      connection = $connection
     end
 
 Usage

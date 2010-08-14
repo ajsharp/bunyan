@@ -14,14 +14,14 @@ module Bunyan
 
     attr_reader :db, :connection, :collection, :config
 
-    # Bunyan::Logger.configure do |config|
+    # Bunyan::Logger.configure do
     #   # required options
-    #   config.database   'bunyan_logger'
-    #   config.collection 'development_log'
+    #   database   'bunyan_logger'
+    #   collection 'development_log'
     #
     #   # optional options
-    #   config.disabled true
-    #   config.size 52428800 # 50.megabytes in Rails
+    #   disabled true
+    #   size 52428800 # 50.megabytes in Rails
     # end
     def configure(&block)
       @config = Logger::Config.new
