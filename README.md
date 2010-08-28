@@ -45,6 +45,19 @@ The Logger class is implemented as a singleton, and you can call any instance
 method on the Logger class. This is implemented with some method_missing magic,
 which is explained in a bit more detail below.
 
+Middleware
+==========
+To make use of Bunyan in your web apps, you need some way to capture request data. 
+I have added an example middleware (which is extremely, extremely ugly) which you
+can find at `examples/middleware.rb`. 
+
+There are plans for a standard middleware API, but it has not yet been implemented.
+If you have interest in helping/collaborating on this feature, please get in touch
+with me. 
+
+Until the middleware API is complete, please use this example middleware at your
+own risk!
+
 Internals
 =========
 Bunyan makes heavy usage of method\_missing both at the class and instance level.
