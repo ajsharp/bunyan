@@ -15,3 +15,6 @@ rescue LoadError
   puts "Jeweler not available. Install it with: gem install jeweler"
 end
 
+task :default do
+  system("spec spec")
+end
