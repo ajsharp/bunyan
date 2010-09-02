@@ -7,8 +7,8 @@ begin
     gemspec.email = "ajsharp@gmail.com"
     gemspec.homepage = "http://github.com/ajsharp/bunyan"
     gemspec.authors = ["Alex Sharp"]
-    gemspec.add_dependency 'mongo',     '>= 0.20.1'
-    gemspec.add_dependency 'bson_ext', '>= 0.20.1'
+    gemspec.add_dependency 'mongo',     '~> 1.0.8'
+    gemspec.add_dependency 'bson_ext',  '~> 1.0.7'
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError
