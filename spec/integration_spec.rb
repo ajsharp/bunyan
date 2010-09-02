@@ -15,7 +15,7 @@ describe 'making a mongodb connection with the new configuration syntax' do
   end
     
   it 'should allow inserting documents' do
-    Bunyan::Logger.insert(@params).should be_instance_of BSON::ObjectID
+    Bunyan::Logger.insert(@params).should be_instance_of BSON::ObjectId
   end
   
   it 'should allow querying documents' do
@@ -39,7 +39,7 @@ describe 'making a mongodb connection with the old configuration syntax' do
   end
     
   it 'should allow inserting documents' do
-    Bunyan::Logger.insert(@params).should be_instance_of BSON::ObjectID
+    Bunyan::Logger.insert(@params).should be_instance_of BSON::ObjectId
   end
   
   it 'should allow querying documents' do
