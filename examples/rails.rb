@@ -1,11 +1,11 @@
 
 # put in config/initializers/bunyan.rb
-Bunyan::Logger.configure do |config|
+Bunyan::Logger.configure do
   # required options
-  config.database   "bunyan_logger"
-  config.collection "#{RAILS_ENV}_log"
+  database   "bunyan_logger"
+  collection "#{RAILS_ENV}_log"
 
   # optional
-  config.size       75.megabytes
+  size       75.megabytes
 end
 
