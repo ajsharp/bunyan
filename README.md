@@ -37,6 +37,9 @@ For rails apps, put the following config block in an initializer.
       # if you do so, host / port are ignored 
       connection = $connection
     end
+    
+    # Gemfile
+    gem 'bson_ext', '1.1' # set the version to whatever the current version of bson the mongo gem is using
 
 Usage
 =====
