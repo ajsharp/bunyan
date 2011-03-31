@@ -3,3 +3,4 @@ Gemfile.lock
 coverage
 pkg
 .rvmrc
+spec/spec.opts
