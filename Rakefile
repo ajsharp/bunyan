@@ -7,13 +7,24 @@ begin
     gemspec.email = "ajsharp@gmail.com"
     gemspec.homepage = "http://github.com/ajsharp/bunyan"
     gemspec.authors = ["Alex Sharp"]
-    gemspec.add_dependency 'mongo',     '~> 1.0.9'
+    gemspec.add_dependency 'mongo',     '~> 1.2.4'
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError
   puts "Jeweler not available. Install it with: gem install jeweler"
 end
 
-task :default do
-  system("spec spec")
+begin
+  require 'spec/rake/spectask'
+
+  Spec::Rake::SpecTask.new
+
+  Spec::Rake::SpecTask.new(:specs_with_coverage) do |t|
+    t.spec_files = FileList['spec/*_spec.rb']
+    t.rcov = true
+    t.rcov_opts = ['--exclude', 'spec', '--exclude', 'gems']
+  end
+rescue LoadError
 end
+
+task :default => :spec

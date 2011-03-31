@@ -28,6 +28,10 @@ Spec::Runner.configure do |config|
     @mock_database
   end
 
+  def unstub_mongo
+    Mongo::Connection.unstub!(:new)
+  end
+
   def other_fake_mongo
     #I want to check Mongo::Connection.stub.new is not called
     dm = DuckedMongo
@@ -35,10 +39,11 @@ Spec::Runner.configure do |config|
     dm
   end
 
-  def configure_test_db
-    Bunyan::Logger.configure do |config|
-      config.database   'bunyan_test'
-      config.collection 'bunyan_test_log'
+  def configure_test_db(&block)
+    Bunyan::Logger.configure do |c|
+      c.database   'bunyan_test'
+      c.collection 'bunyan_test_log'
+      yield(c) if block_given?
     end
   end
 end
