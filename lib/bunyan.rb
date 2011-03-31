@@ -14,17 +14,19 @@ module Bunyan
 
     attr_reader :db, :connection, :collection, :config
 
-    # Bunyan::Logger.configure do
-    #   # required options
-    #   database   'bunyan_logger'
-    #   collection 'development_log'
+    # @example Configuring bunyan
+    #   Bunyan::Logger.configure do
+    #     # required options
+    #     database   'bunyan_logger'
+    #     collection 'development_log'
     #
-    #   # optional options
-    #   disabled true
-    #   size 52428800 # 50.megabytes in Rails
-    # end
+    #     # optional options
+    #     disabled true
+    #     size 52428800 # 50.megabytes in Rails
+    #   end
     def configure(&block)
       @config = Logger::Config.new
+      @config.abort_on_failed_reconnect = false
 
       # provide legacy support for old configuration syntax
       (block.arity > 0) ? yield(@config) : @config.instance_eval(&block)
@@ -46,8 +48,26 @@ module Bunyan
     def method_missing(method, *args, &block)
       begin
         collection.send(method, *args) if database_is_usable?
-      rescue
-        super(method, *args, &block)
+      rescue Mongo::ConnectionFailure
+        # At this point, the problem may be that the server was restarted
+        # and we have stale connection object. The mongo ruby driver will
+        # handle automatically handling a reconnect, and will issue a fresh
+        # connection object if it can obtain one. In which case, let's try
+        # the query again.
+        begin
+          collection.send(method, *args, &block) if database_is_usable?
+        rescue Mongo::ConnectionFailure => e
+          # Ok, we're having real connection issues. The mongod server is likely
+          # down. We still may want to fail silently, because bunyan is mostly a support
+          # library, and we wouldn't want exceptions to bubble up just b/c the
+          # mongod server is down. If it were the core datastore, then we probably
+          # would want it to bubble up.
+          #
+          # If you for some reason you do want error to bubble up, set the
+          # `abort_on_failed_reconnect` config option to true.
+
+          raise e if config.abort_on_failed_reconnect?
+        end
       end
     end
 

@@ -28,25 +28,111 @@ describe Bunyan::Logger do
 end
 
 describe 'when a mongod instance is not running' do
-  before do
-    Mongo::Connection.stub!(:new).and_raise(Mongo::ConnectionFailure)
-  end
+  context "when initializing the bunyan setup" do
+    before do
+      Mongo::Connection.stub!(:new).and_raise(Mongo::ConnectionFailure)
+    end
 
-  it 'should not blow up' do
-    lambda {
+    it 'should not blow up' do
+      lambda {
+        Bunyan::Logger.configure do |c|
+          c.database   'doesnt_matter'
+          c.collection 'b/c mongod isnt running'
+        end
+      }.should_not raise_exception(Mongo::ConnectionFailure)
+    end
+
+    it 'should mark bunyan as disabled' do
       Bunyan::Logger.configure do |c|
         c.database   'doesnt_matter'
         c.collection 'b/c mongod isnt running'
       end
-    }.should_not raise_exception(Mongo::ConnectionFailure)
+      Bunyan::Logger.should be_disabled
+    end
   end
 
-  it 'should mark bunyan as disabled' do
-    Bunyan::Logger.configure do |c|
-      c.database   'doesnt_matter'
-      c.collection 'b/c mongod isnt running'
+  context "when sending queries to Bunyan when a connection error occurs" do
+    class Mongo::Connection
+      attr_accessor :conn_fail
+
+      def new_send_message_on_socket(*args)
+        if conn_fail && conn_fail > 0
+          self.conn_fail -= 1
+          raise Mongo::ConnectionFailure
+        else
+          old_send_message_on_socket(*args)
+        end
+      end
     end
-    Bunyan::Logger.should be_disabled
+
+    before do
+      Mongo::Connection.send(:alias_method, :old_send_message_on_socket, :send_message_on_socket)
+      Mongo::Connection.send(:alias_method, :send_message_on_socket, :new_send_message_on_socket)
+    end
+
+    after do
+      Mongo::Connection.send(:alias_method, :send_message_on_socket, :old_send_message_on_socket)
+    end
+
+    before do
+      unstub_mongo
+      configure_test_db
+    end
+
+    it "should not raise an exception" do
+      Bunyan::Logger.connection.conn_fail = 1
+
+      lambda {
+        Bunyan::Logger.count
+      }.should_not raise_error(Mongo::ConnectionFailure)
+    end
+
+    context "by default" do
+      it "should not raise an exception if a connection error occurs on multiple requests" do
+        Bunyan::Logger.connection.conn_fail = 2
+
+        lambda {
+          Bunyan::Logger.count
+        }.should_not raise_error(Mongo::ConnectionFailure)
+      end
+    end
+
+    context "when abort_on_failed_reconnect is true" do
+      before do
+        configure_test_db do |c|
+          c.abort_on_failed_reconnect true
+        end
+      end
+
+      it "should raise an exception when more than one failed request occurs" do
+        Bunyan::Logger.connection.conn_fail = 2
+
+        lambda {
+          Bunyan::Logger.count
+        }.should raise_error(Mongo::ConnectionFailure)
+      end
+
+      it "should not raise an error when only one failed request occurs" do
+        Bunyan::Logger.connection.conn_fail = 1
+
+        lambda {
+          Bunyan::Logger.count
+        }.should_not raise_error(Mongo::ConnectionFailure)
+      end
+    end
+
+    it "should raise errors at the mongo level" do
+      # This is really a test to make sure our crazy stubbing magic
+      # above is working properly. It has nothing to do with actual
+      # library behavior.
+      Bunyan::Logger.connection.conn_fail = 1
+      db = Bunyan::Logger.db
+      coll = db.collection('no_op_collection')
+
+      lambda {
+        coll.count
+      }.should raise_error(Mongo::ConnectionFailure)
+    end
   end
 end
 

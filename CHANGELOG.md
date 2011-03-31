@@ -1,3 +1,9 @@
+Version 0.5.0
+=============
+* Added ActiveRecord-style "silent" connection reconnect
+* Added #abort_on_failed_reconnect configuration option
+* Upped dependent version of mongo gem to ~> 1.2.4
+
 Version 0.4.0
 =============
 * New configuration syntax (see readme)

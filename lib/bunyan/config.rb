@@ -5,7 +5,7 @@ module Bunyan
 
     class Config
       extend Bunyan::ConfigurableMethods
-      configurable_methods :port, :host, :database, :collection, :disabled, :connection
+      configurable_methods :port, :host, :database, :collection, :disabled, :connection, :abort_on_failed_reconnect
 
       def initialize
         @size     = 52428800
@@ -18,6 +18,10 @@ module Bunyan
 
       def disabled?
         !!@disabled
+      end
+
+      def abort_on_failed_reconnect?
+        !!@abort_on_failed_reconnect
       end
 
       # default size is 50 megabytes
