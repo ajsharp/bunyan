@@ -55,12 +55,14 @@ module Bunyan
         # the query again.
         begin
           collection.send(method, *args, &block) if database_is_usable?
-        rescue Mongo::ConnectionFailure
+        rescue Mongo::ConnectionFailure => e
           # Ok, we're having real connection issues. The mongod server is likely
           # down. Still, let's fail silently, because bunyan is mostly a support
           # library, and we wouldn't want exceptions to bubble up just b/c the
           # mongod server is down. If it were the core datastore, then we probably
           # would want it to bubble up.
+
+          raise e if config.abort_on_failed_reconnect?
         end
       end
     end
