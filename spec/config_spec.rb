@@ -211,3 +211,28 @@ describe 'the old configuration syntax' do
     Bunyan::Logger.config.database.should == 'old_config_db'
   end
 end
+
+describe Bunyan::Logger::Config, '#abort_on_failed_reconnect' do
+  subject { Bunyan::Logger.config.abort_on_failed_reconnect }
+
+  it 'defaults to false' do
+    configure_test_db
+    subject.should be_false
+  end
+
+  it 'can be set to true in the config block' do
+    configure_test_db do |c|
+      c.abort_on_failed_reconnect true
+    end
+
+    subject.should be_true
+  end
+
+  it 'can be set to false in the config block' do
+    configure_test_db do |c|
+      c.abort_on_failed_reconnect false
+    end
+
+    subject.should be_false
+  end
+end

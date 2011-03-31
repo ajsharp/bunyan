@@ -25,6 +25,7 @@ module Bunyan
     # end
     def configure(&block)
       @config = Logger::Config.new
+      @config.abort_on_failed_reconnect = false
 
       # provide legacy support for old configuration syntax
       (block.arity > 0) ? yield(@config) : @config.instance_eval(&block)
