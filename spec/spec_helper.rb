@@ -39,10 +39,11 @@ Spec::Runner.configure do |config|
     dm
   end
 
-  def configure_test_db
-    Bunyan::Logger.configure do |config|
-      config.database   'bunyan_test'
-      config.collection 'bunyan_test_log'
+  def configure_test_db(&block)
+    Bunyan::Logger.configure do |c|
+      c.database   'bunyan_test'
+      c.collection 'bunyan_test_log'
+      yield(c) if block_given?
     end
   end
 end
