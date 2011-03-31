@@ -14,15 +14,16 @@ module Bunyan
 
     attr_reader :db, :connection, :collection, :config
 
-    # Bunyan::Logger.configure do
-    #   # required options
-    #   database   'bunyan_logger'
-    #   collection 'development_log'
+    # @example Configuring bunyan
+    #   Bunyan::Logger.configure do
+    #     # required options
+    #     database   'bunyan_logger'
+    #     collection 'development_log'
     #
-    #   # optional options
-    #   disabled true
-    #   size 52428800 # 50.megabytes in Rails
-    # end
+    #     # optional options
+    #     disabled true
+    #     size 52428800 # 50.megabytes in Rails
+    #   end
     def configure(&block)
       @config = Logger::Config.new
       @config.abort_on_failed_reconnect = false
@@ -57,10 +58,13 @@ module Bunyan
           collection.send(method, *args, &block) if database_is_usable?
         rescue Mongo::ConnectionFailure => e
           # Ok, we're having real connection issues. The mongod server is likely
-          # down. Still, let's fail silently, because bunyan is mostly a support
+          # down. We still may want to fail silently, because bunyan is mostly a support
           # library, and we wouldn't want exceptions to bubble up just b/c the
           # mongod server is down. If it were the core datastore, then we probably
           # would want it to bubble up.
+          #
+          # If you for some reason you do want error to bubble up, set the
+          # `abort_on_failed_reconnect` config option to true.
 
           raise e if config.abort_on_failed_reconnect?
         end
