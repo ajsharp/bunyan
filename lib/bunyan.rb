@@ -46,8 +46,21 @@ module Bunyan
     def method_missing(method, *args, &block)
       begin
         collection.send(method, *args) if database_is_usable?
-      rescue
-        super(method, *args, &block)
+      rescue Mongo::ConnectionFailure
+        # At this point, the problem may be that the server was restarted
+        # and we have stale connection object. The mongo ruby driver will
+        # handle automatically handling a reconnect, and will issue a fresh
+        # connection object if it can obtain one. In which case, let's try
+        # the query again.
+        begin
+          collection.send(method, *args, &block) if database_is_usable?
+        rescue Mongo::ConnectionFailure
+          # Ok, we're having real connection issues. The mongod server is likely
+          # down. Still, let's fail silently, because bunyan is mostly a support
+          # library, and we wouldn't want exceptions to bubble up just b/c the
+          # mongod server is down. If it were the core datastore, then we probably
+          # would want it to bubble up.
+        end
       end
     end
 

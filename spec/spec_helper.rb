@@ -28,6 +28,10 @@ Spec::Runner.configure do |config|
     @mock_database
   end
 
+  def unstub_mongo
+    Mongo::Connection.unstub!(:new)
+  end
+
   def other_fake_mongo
     #I want to check Mongo::Connection.stub.new is not called
     dm = DuckedMongo
