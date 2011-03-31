@@ -20,6 +20,10 @@ module Bunyan
         !!@disabled
       end
 
+      def abort_on_failed_reconnect?
+        !!@abort_on_failed_reconnect
+      end
+
       # default size is 50 megabytes
       def size(new_size = nil)
         new_size.nil? ? @size : @size = new_size

@@ -235,4 +235,24 @@ describe Bunyan::Logger::Config, '#abort_on_failed_reconnect' do
 
     subject.should be_false
   end
+
+  describe "#abort_on_failed_reconnect?" do
+    subject { Bunyan::Logger.config.abort_on_failed_reconnect? }
+
+    it "should returns true when set to true" do
+      configure_test_db { |c| c.abort_on_failed_reconnect true }
+
+      subject.should be_true
+    end
+
+    it "should return false when set to false" do
+      configure_test_db { |c| c.abort_on_failed_reconnect false }
+      subject.should be_false
+    end
+
+    it "should return false by default" do
+      subject.should be_false
+    end
+  end
 end
+
